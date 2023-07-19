@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Butschster\Kraken;
@@ -26,8 +27,7 @@ class WebsocketClient implements Contracts\WebsocketClient
         private SerializerInterface $serializer,
         private LoopInterface $loop,
         private array $headers = []
-    )
-    {
+    ) {
     }
 
     public function connectToPrivateServer(string $token, Closure $callback): void
@@ -48,8 +48,8 @@ class WebsocketClient implements Contracts\WebsocketClient
 
         try {
             $connector($server, [], $this->headers)->then(
-                $this->onConnect($token),
-                $this->onFailure()
+                $this->onConnect($this->loop, $token),
+                $this->onFailure($this->loop)
             );
         } catch (Throwable $e) {
             foreach ($this->onFailureCallback as $callback) {
